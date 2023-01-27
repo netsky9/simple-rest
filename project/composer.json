@@ -1,0 +1,13 @@
+{
+    "require": {
+        "pecee/simple-router": "*",
+        "lcobucci/jwt": "^3.4",
+        "ext-json": "*",
+        "catfan/medoo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": ""
+        }
+    }
+}

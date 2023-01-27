@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  rest-apache:
+    restart: always
+    container_name: rest-apache
+    build: apache
+    user: $DOCKER_USER
+    working_dir: /www
+    ports:
+      - '80:80'
+    environment:
+      PHP_IDE_CONFIG: "serverName=rest-api.test"
+      PHP_ENABLE_XDEBUG: 1
+    volumes:
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      - ./apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./php-fpm/user-config.ini:/usr/local/etc/php/conf.d/user-config.ini
+      - ./project:/www
+    networks:
+      - rest-network
+
+  rest-db:
+    container_name: rest-db
+#    platform: linux/x86_64
+    restart: always
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=rest
+      - MYSQL_ROOT_PASSWORD=ddefYHFt36H
+    ports:
+      - '3308:3306'
+    volumes:
+      - "./mysql-db:/var/lib/mysql"
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/custom.cnf:/etc/my.cnf.d/custom.cnf
+    networks:
+      rest-network:
+        aliases:
+          - rest.db
+
+networks:
+  rest-network:
+
